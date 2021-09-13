@@ -1,10 +1,20 @@
 #Libraries needed
 import requests
 import time
-#from termcolor import colored
+import ctypes
+from termcolor import colored
 
 #variables
 missing = []
+
+#initialise colors on output console
+def init_colors():
+	kernel32 = ctypes.WinDLL('kernel32')
+	hStdOut = kernel32.GetStdHandle(-11)
+	mode = ctypes.c_ulong()
+	kernel32.GetConsoleMode(hStdOut, ctypes.byref(mode))
+	mode.value |= 4
+	kernel32.SetConsoleMode(hStdOut, mode)
 
 #check if player is in grp function
 def checkGroup(name):
@@ -27,8 +37,13 @@ def checkGroup(name):
 
 	return inGroup
 
+
+#init colors
+init_colors()
+
 #log
-print("[INIT] " + "Functions initialised")
+print("[" + colored("INIT", "yellow") + "] " + "Colors initialised")
+print("[" + colored("INIT", "yellow") + "] " + "Functions initialised")
 	
 #opens the userfile
 with open("userList.txt", "r")as f: #edit the "userList.txt" if you want your own input file name
@@ -39,7 +54,7 @@ with open("userList.txt", "r")as f: #edit the "userList.txt" if you want your ow
 names = names.split('\n')
 
 #log
-print("[INIT] " + "Names gotten, initialising checker.")
+print("[" + colored("INIT", "yellow") + "] " + "Names gotten, initialising checker.")
 print()
 
 #loop
@@ -48,12 +63,12 @@ for name in names:
 	chek = checkGroup(name) #calls the function, would store True, False or "Missing"
 	#output
 	if chek == False:
-		print("[-] " + name + " is not in the MPC group!")
+		print("[" + colored("-", "red") + "] " + name + " is not in the MPC group!")
 		missing.append(name) #if not in MPC group, put into list to be printed later
 	elif chek == "Missing":
-		print("[-] " + name + " was not found on Roblox")
+		print("[" + colored("-", "red") + "] " + name + " was not found on Roblox")
 	else:
-		print("[+] " + name + " is in the MPC group :D")
+		print("[" + colored("+", "green") + "] " + name + " is in the MPC group :D")
 
 	time.sleep(1)
 
